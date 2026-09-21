@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programs · Bestlink College of the Philippines</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    .bg-bcp-deep { background: #0a1e3d; }
+    .bg-bcp-mid { background: #1a3a6b; }
+    .bg-bcp-light { background: #eef4fc; }
+    .text-bcp-sky { color: #4fc3f7; }
+    .border-bcp-sky { border-color: #4fc3f7; }
+    .bg-bcp-sky { background: #4fc3f7; }
+
+    .glass-dark {
+      background: rgba(10, 30, 61, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-sky {
+      background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+      color: #0a1e3d;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+    }
+    .btn-sky:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px -8px rgba(79, 195, 247, 0.5);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4fc3f7;
+      transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: #4fc3f7; }
+
+    .programs-hero {
+      background: linear-gradient(135deg, #0a1e3d 0%, #1a3a6b 50%, #0a1e3d 100%);
+      padding: 140px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .programs-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79, 195, 247, 0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Program Cards */
+    .program-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.75rem;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid rgba(79, 195, 247, 0.08);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .program-card:hover::before {
+      transform: scaleX(1);
+    }
+    .program-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px -12px rgba(10, 30, 61, 0.15);
+      border-color: rgba(79, 195, 247, 0.2);
+    }
+    .program-card .program-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.12), rgba(79, 195, 247, 0.04));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #4fc3f7;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+    .program-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0a1e3d;
+      margin-bottom: 0.5rem;
+    }
+    .program-card .program-code {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #4fc3f7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .program-card p {
+      color: #1a3a6b;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+    .program-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .program-card .tags span {
+      background: rgba(79, 195, 247, 0.08);
+      color: #0a1e3d;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      transition: all 0.3s;
+    }
+    .program-card:hover .tags span {
+      background: rgba(79, 195, 247, 0.18);
+    }
+    .program-card .program-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(79, 195, 247, 0.08);
+    }
+    .program-card .program-footer .duration {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1a3a6b;
+    }
+    .program-card .program-footer .learn-more {
+      color: #4fc3f7;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .program-card .program-footer .learn-more:hover i {
+      transform: translateX(4px);
+    }
+
+    /* Tab Buttons */
+    .tab-btn {
+      padding: 0.6rem 2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      color: #1a3a6b;
+    }
+    .tab-btn.active {
+      background: #0a1e3d;
+      color: white;
+      border-color: #0a1e3d;
+    }
+    .tab-btn:hover:not(.active) {
+      background: rgba(79, 195, 247, 0.08);
+      border-color: rgba(79, 195, 247, 0.2);
+    }
+
+    .footer-link {
+      transition: color 0.3s;
+    }
+    .footer-link:hover {
+      color: #4fc3f7;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #4fc3f7;
+      display: inline-block;
+    }
+
+    .tesda-badge {
+      background: linear-gradient(135deg, #0a1e3d, #1a3a6b);
+      color: #4fc3f7;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.15rem 0.7rem;
+      border-radius: 40px;
+      border: 1px solid rgba(79, 195, 247, 0.2);
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+    .delay-6 { animation-delay: 0.3s; }
+    .delay-7 { animation-delay: 0.35s; }
+    .delay-8 { animation-delay: 0.4s; }
+    .delay-9 { animation-delay: 0.45s; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ===== TOP NAV ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-dark text-white py-3 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html">
+          <img src="assets/bcp-logo.png" alt="BCP Logo" class="h-11 w-auto object-contain" />
+        </a>
+        <a href="index.html" class="text-sm font-light hidden sm:inline hover:text-bcp-sky transition-colors">
+          <span class="font-semibold">Bestlink</span> College of the Philippines
+        </a>
+      </div>
+      <nav class="flex flex-wrap items-center gap-3 md:gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link px-1 py-1 text-gray-300">Home</a>
+        <a href="about.html" class="nav-link px-1 py-1 text-gray-300">About</a>
+        <a href="programs.html" class="nav-link px-1 py-1 text-gray-300">Programs</a>
+        <a href="admissions.html" class="nav-link px-1 py-1 text-gray-300">Admissions</a>
+        <a href="student-services.html" class="nav-link px-1 py-1 text-gray-300">Student Services</a>
+        <a href="#" class="nav-link px-1 py-1 text-gray-300">News</a>
+        <a href="events.html" class="nav-link px-1 py-1 text-gray-300">Events</a>
+        <a href="#" class="nav-link px-1 py-1 text-gray-300">Contact</a>
+        <a href="online-admission.html" class="btn-sky px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+          <i class="fas fa-user-graduate"></i> Enroll Now!
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== PROGRAMS HERO ===== -->
+  <section class="programs-hero">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center text-white">
+        <span class="inline-block bg-white/10 backdrop-blur-sm text-bcp-sky text-xs font-semibold px-5 py-2 rounded-full mb-6 border border-white/10">
+          <i class="fas fa-graduation-cap mr-2"></i> ACADEMICS
+        </span>
+        <h1 class="text-4xl md:text-5xl font-extrabold">Programs & Strands</h1>
+        <p class="text-lg text-[#b0d4e8] mt-4 max-w-2xl mx-auto leading-relaxed">
+          Explore our college degree programs, Senior High School strands, and TESDA-accredited courses designed to prepare you for the future.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROGRAMS SECTION WITH TABS ===== -->
+  <section class="py-12 bg-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4">
+      <!-- Tab Buttons -->
+      <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <button 
+          v-for="tab in tabs" 
+          :key="tab.key"
+          @click="activeTab = tab.key"
+          class="tab-btn"
+          :class="{ 'active': activeTab === tab.key }"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
+
+      <!-- College Programs -->
+      <div v-show="activeTab === 'college'">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="(prog, idx) in collegePrograms" :key="prog.code" 
+               class="program-card fade-in" :class="'delay-' + ((idx % 6) + 1)">
+            <div class="program-icon">
+              <i :class="prog.icon"></i>
+            </div>
+            <div class="program-code">{{ prog.code }}</div>
+            <h3>{{ prog.title }}</h3>
+            <p>{{ prog.desc }}</p>
+            <div class="tags">
+              <span v-for="tag in prog.tags" :key="tag">{{ tag }}</span>
+            </div>
+            <div class="program-footer">
+              <span class="duration"><i class="far fa-clock mr-1"></i> {{ prog.duration }} years</span>
+              <a href="#" class="learn-more">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Senior High -->
+      <div v-show="activeTab === 'senior'">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="(prog, idx) in seniorHighPrograms" :key="prog.code" 
+               class="program-card fade-in" :class="'delay-' + ((idx % 6) + 1)">
+            <div class="program-icon">
+              <i :class="prog.icon"></i>
+            </div>
+            <div class="program-code">{{ prog.code }}</div>
+            <h3>{{ prog.title }}</h3>
+            <p>{{ prog.desc }}</p>
+            <div class="tags">
+              <span v-for="tag in prog.tags" :key="tag">{{ tag }}</span>
+            </div>
+            <div class="program-footer">
+              <span class="duration"><i class="far fa-clock mr-1"></i> {{ prog.duration }} years</span>
+              <a href="#" class="learn-more">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TESDA -->
+      <div v-show="activeTab === 'tesda'">
+        <div class="text-center mb-8">
+          <span class="inline-block bg-[#eef4fc] text-[#0a1e3d] text-sm font-semibold px-6 py-2 rounded-full border border-[#4fc3f7]/20">
+            <i class="fas fa-certificate text-bcp-sky mr-2"></i>
+            Industry-recognized, TESDA-accredited skills courses with National Certificate (NC II) qualifications.
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="(prog, idx) in tesdaPrograms" :key="prog.code" 
+               class="program-card fade-in" :class="'delay-' + ((idx % 9) + 1)">
+            <div class="program-icon">
+              <i :class="prog.icon"></i>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="program-code">{{ prog.code }}</div>
+              <span class="tesda-badge"><i class="fas fa-check-circle mr-1"></i> NC II</span>
+            </div>
+            <h3>{{ prog.title }}</h3>
+            <p>{{ prog.desc }}</p>
+            <div class="tags">
+              <span v-for="tag in prog.tags" :key="tag">{{ tag }}</span>
+            </div>
+            <div class="program-footer">
+              <span class="duration"><i class="far fa-clock mr-1"></i> {{ prog.duration }}</span>
+              <a href="#" class="learn-more">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <div class="bg-bcp-deep text-white py-16 my-6 rounded-[4rem] rounded-b-3xl mx-4 md:mx-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#4fc3f7]/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#29b6f6]/10 rounded-full blur-2xl"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-wrap justify-around items-center gap-8 text-center">
+      <div>
+        <div class="stat-number text-5xl">45,000+</div>
+        <div class="font-light opacity-80 mt-1">Students</div>
+        <div class="text-xs opacity-50">A thriving learning community across all programs and campuses.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">2002</div>
+        <div class="font-light opacity-80 mt-1">Established</div>
+        <div class="text-xs opacity-50">Founded in June 2002 — over two decades of quality education.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">3</div>
+        <div class="font-light opacity-80 mt-1">Campuses</div>
+        <div class="text-xs opacity-50">Millionaire's Village, Main, and Bulacan campuses serving learners.</div>
+      </div>
+      <div class="glass px-8 py-4 rounded-full flex items-center gap-4 border border-white/10">
+        <img src="assets/bcp-logo.png" alt="BCP" class="h-10 w-auto" />
+        <span class="font-bold tracking-wider text-lg">BCP</span>
+        <span class="opacity-30">|</span>
+        <span class="font-light">PHILIPPINES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-[#0a1e3d] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <a href="index.html">
+              <img src="assets/bcp-logo.png" alt="Bestlink College of the Philippines logo" class="h-12 w-auto" />
+            </a>
+            <a href="index.html" class="font-bold text-lg hover:text-bcp-sky transition-colors">BCP</a>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            At Bestlink College of the Philippines, We provide and promote quality education with modern and unique techniques to able to enhance the skill and the knowledge of our dear students to make them globally competitive and productive citizens.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">EXPLORE</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="about.html" class="footer-link">About</a></li>
+            <li><a href="programs.html" class="footer-link">Programs</a></li>
+            <li><a href="#" class="footer-link">Admissions</a></li>
+            <li><a href="#" class="footer-link">Student Services</a></li>
+            <li><a href="#" class="footer-link">News</a></li>
+            <li><a href="#" class="footer-link">Events</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">USEFUL LINKS</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="#" class="footer-link">BCP College LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SHS LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SMS</a></li>
+            <li><a href="#" class="footer-link">BCP Student E-Mail</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">CONTACT</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-bcp-sky mt-1"></i> #1071 Brgy. Kaligayahan, Quirino Highway, Novaliches Quezon City, Philippines 1123</li>
+            <li class="flex gap-3"><i class="fas fa-envelope text-bcp-sky mt-1"></i> bcp-inquiry@bcp.edu.ph</li>
+            <li class="flex gap-3"><i class="fas fa-phone text-bcp-sky mt-1"></i> 7000-5317 · 8442-8601</li>
+          </ul>
+          <div class="flex gap-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 flex flex-wrap justify-between items-center text-sm text-gray-400">
+        <span>© Copyright BCP. All Rights Reserved</span>
+        <span>Developed by BCP MIS Department</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== VUE APP ===== -->
+<script>
+  const { createApp, ref, onMounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const activeTab = ref('college');
+
+      const tabs = ref([
+        { key: 'college', label: 'College Programs' },
+        { key: 'senior', label: 'Senior High' },
+        { key: 'tesda', label: 'TESDA' }
+      ]);
+
+      const collegePrograms = ref([
+        { code: 'BSIT', title: 'BS Information Technology', icon: 'fas fa-laptop-code', duration: 4, desc: 'Build software, networks, and digital systems with a future-ready, industry-aligned curriculum.', tags: ['Software Development', 'Networking', 'Web & Mobile'] },
+        { code: 'BSHM', title: 'BS Hospitality Management', icon: 'fas fa-utensils', duration: 4, desc: 'Master hotel, restaurant, and culinary operations through hands-on training.', tags: ['Culinary Arts', 'Hotel Operations', 'Events'] },
+        { code: 'BSOA', title: 'BS Office Administration', icon: 'fas fa-building', duration: 4, desc: 'Develop office management, communication, and administrative expertise.', tags: ['Office Management', 'Records', 'Communication'] },
+        { code: 'BSBA', title: 'BS Business Administration', icon: 'fas fa-chart-line', duration: 4, desc: 'Develop leadership, management, and entrepreneurial skills for modern business.', tags: ['Marketing', 'Financial Management', 'Entrepreneurship'] },
+        { code: 'BSCrim', title: 'BS Criminology', icon: 'fas fa-balance-scale', duration: 4, desc: 'Prepare for a career in law enforcement, forensics, and public safety.', tags: ['Forensic Science', 'Criminal Law', 'Crime Detection'] },
+        { code: 'BEED', title: 'Bachelor of Elementary Education', icon: 'fas fa-chalkboard-teacher', duration: 4, desc: 'Train to become a competent and compassionate elementary educator.', tags: ['Pedagogy', 'Child Development', 'Practice Teaching'] },
+        { code: 'BSED', title: 'Bachelor of Secondary Education', icon: 'fas fa-chalkboard', duration: 4, desc: 'Specialize in teaching and shape the next generation of high school learners.', tags: ['Major Specialization', 'Curriculum', 'Practice Teaching'] },
+        { code: 'BSCpE', title: 'BS Computer Engineering', icon: 'fas fa-microchip', duration: 4, desc: 'Engineer hardware and software systems, from embedded devices to intelligent machines.', tags: ['Embedded Systems', 'Microprocessors', 'Robotics'] },
+        { code: 'BSTM', title: 'BS Tourism Management', icon: 'fas fa-plane', duration: 4, desc: 'Explore travel, tourism, and destination management on a global scale.', tags: ['Travel Operations', 'Eco-Tourism', 'Destinations'] },
+        { code: 'BSEnt', title: 'BS Entrepreneurship', icon: 'fas fa-lightbulb', duration: 4, desc: 'Learn to build, launch, and scale your own business ventures.', tags: ['Business Planning', 'Innovation', 'Venture Growth'] },
+        { code: 'BSAIS', title: 'BS Accounting Information System', icon: 'fas fa-calculator', duration: 4, desc: 'Blend accounting principles with information systems and data-driven finance.', tags: ['Accounting', 'Information Systems', 'Auditing'] },
+        { code: 'BSPsych', title: 'BS Psychology', icon: 'fas fa-brain', duration: 4, desc: 'Understand human behavior and prepare for careers in counseling and research.', tags: ['Clinical Psychology', 'Research', 'Counseling'] },
+        { code: 'BLIS', title: 'BL Information Science', icon: 'fas fa-book-open', duration: 4, desc: 'Manage information resources, libraries, and knowledge systems.', tags: ['Information Management', 'Cataloguing', 'Digital Archives'] }
+      ]);
+
+      const seniorHighPrograms = ref([
+        { code: 'STEM', title: 'Science, Technology, Engineering, and Mathematics', icon: 'fas fa-flask', duration: 2, desc: 'Prepare for college programs in science, technology, engineering, and mathematics fields.', tags: ['Research', 'Advanced Math', 'Science'] },
+        { code: 'ABM', title: 'Accountancy, Business, and Management', icon: 'fas fa-chart-pie', duration: 2, desc: 'Develop business acumen and management skills for careers in entrepreneurship and corporate sectors.', tags: ['Accounting', 'Marketing', 'Management'] },
+        { code: 'HUMSS', title: 'Humanities and Social Sciences', icon: 'fas fa-users-cog', duration: 2, desc: 'Explore social sciences, literature, and communication for careers in public service and media.', tags: ['Literature', 'Social Studies', 'Communication'] },
+        { code: 'TVL', title: 'Technical-Vocational-Livelihood', icon: 'fas fa-tools', duration: 2, desc: 'Hands-on training in specialized technical skills for immediate employment or entrepreneurship.', tags: ['Skills Training', 'Certification', 'Hands-on'] }
+      ]);
+
+      const tesdaPrograms = ref([
+        { code: 'TESDA', title: 'Animation', icon: 'fas fa-film', duration: '6 months', desc: '2D and 3D animation production skills for the creative and media industry.', tags: ['2D Animation', '3D Animation', 'Creative'] },
+        { code: 'TESDA', title: 'Visual Graphics Design', icon: 'fas fa-paint-brush', duration: '6 months', desc: 'Digital design, layout, and visual communication for print and web.', tags: ['Digital Design', 'Layout', 'Web Design'] },
+        { code: 'TESDA', title: 'Housekeeping', icon: 'fas fa-bed', duration: '6 months', desc: 'Professional housekeeping operations for hotels and accommodation services.', tags: ['Hotel Operations', 'Housekeeping', 'Hospitality'] },
+        { code: 'TESDA', title: 'Bartending', icon: 'fas fa-glass-martini-alt', duration: '3 months', desc: 'Beverage preparation, mixology, and bar service standards.', tags: ['Mixology', 'Beverage', 'Bar Service'] },
+        { code: 'TESDA', title: 'Baking and Pastry Production', icon: 'fas fa-cookie', duration: '6 months', desc: 'Baking, pastry, and dessert production techniques for the food industry.', tags: ['Baking', 'Pastry', 'Dessert'] },
+        { code: 'TESDA', title: 'Food and Beverage Services', icon: 'fas fa-concierge-bell', duration: '3 months', desc: 'Dining service operations and customer service for restaurants and hotels.', tags: ['Food Service', 'F&B', 'Customer Service'] },
+        { code: 'TESDA', title: 'Cookery', icon: 'fas fa-utensil-spoon', duration: '6 months', desc: 'Commercial cooking and kitchen operations for the food service industry.', tags: ['Cooking', 'Kitchen Ops', 'Food Industry'] },
+        { code: 'TESDA', title: 'Tour Guiding Services', icon: 'fas fa-map-signs', duration: '3 months', desc: 'Professional tour guiding, itinerary handling, and destination management.', tags: ['Tour Guiding', 'Itinerary', 'Destinations'] },
+        { code: 'TESDA', title: 'Front Office Services', icon: 'fas fa-hotel', duration: '3 months', desc: 'Hotel front desk, reservations, and guest services operations.', tags: ['Front Desk', 'Reservations', 'Guest Services'] }
+      ]);
+
+      onMounted(() => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero animations
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.from('h1', { opacity: 0, y: 40, duration: 0.8 })
+          .from('.inline-block', { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
+          .from('.text-lg', { opacity: 0, y: 20, duration: 0.6 }, '-=0.3');
+
+        // Stats numbers
+        gsap.from('.stat-number', {
+          scrollTrigger: { trigger: '.stat-number', start: 'top 90%' },
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out'
+        });
+      });
+
+      return {
+        activeTab,
+        tabs,
+        collegePrograms,
+        seniorHighPrograms,
+        tesdaPrograms
+      };
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>
