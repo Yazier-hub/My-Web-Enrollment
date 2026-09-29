@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enroll Now · Bestlink College of the Philippines</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    .bg-bcp-deep { background: #0a1e3d; }
+    .bg-bcp-mid { background: #1a3a6b; }
+    .bg-bcp-light { background: #eef4fc; }
+    .text-bcp-sky { color: #4fc3f7; }
+    .border-bcp-sky { border-color: #4fc3f7; }
+    .bg-bcp-sky { background: #4fc3f7; }
+
+    .glass-dark {
+      background: rgba(10, 30, 61, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-sky {
+      background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+      color: #0a1e3d;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+    }
+    .btn-sky:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px -8px rgba(79, 195, 247, 0.5);
+    }
+
+    .btn-outline-sky {
+      border: 2px solid #4fc3f7;
+      color: #0a1e3d;
+      background: transparent;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-outline-sky:hover {
+      background: #4fc3f7;
+      color: #0a1e3d;
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -12px rgba(79, 195, 247, 0.3);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4fc3f7;
+      transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: #4fc3f7; }
+
+    .enroll-hero {
+      background: linear-gradient(135deg, #0a1e3d 0%, #1a3a6b 50%, #0a1e3d 100%);
+      padding: 140px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .enroll-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79, 195, 247, 0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e2ebf6;
+      border-radius: 12px;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      color: #0a1e3d;
+      background: white;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #4fc3f7;
+      box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.1);
+    }
+    .form-input::placeholder {
+      color: #a0b4c8;
+    }
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #0a1e3d;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .form-label .required {
+      color: #e74c3c;
+      margin-left: 2px;
+    }
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230a1e3d' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #4fc3f7;
+      display: inline-block;
+    }
+
+    .footer-link {
+      transition: color 0.3s;
+    }
+    .footer-link:hover {
+      color: #4fc3f7;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+
+    .success-message {
+      background: #e8f5e9;
+      border: 2px solid #4caf50;
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .success-message .icon {
+      font-size: 4rem;
+      color: #4caf50;
+      margin-bottom: 1rem;
+    }
+    .success-message h3 {
+      color: #2e7d32;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .success-message p {
+      color: #1a3a6b;
+      margin-top: 0.5rem;
+    }
+
+    .enrollment-banner-image {
+      background-image: url('assets/enrollment-banner.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 24px;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .enrollment-banner-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10, 30, 61, 0.6), rgba(10, 30, 61, 0.3));
+      border-radius: 24px;
+    }
+    .enrollment-banner-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      min-height: 320px;
+      padding: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ===== TOP NAV ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-dark text-white py-3 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html">
+          <img src="assets/bcp-logo.png" alt="BCP Logo" class="h-11 w-auto object-contain" />
+        </a>
+        <a href="index.html" class="text-sm font-light hidden sm:inline hover:text-bcp-sky transition-colors">
+          <span class="font-semibold">Bestlink</span> College of the Philippines
+        </a>
+      </div>
+      <nav class="flex flex-wrap items-center gap-3 md:gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link px-1 py-1 text-gray-300">Home</a>
+        <a href="about.html" class="nav-link px-1 py-1 text-gray-300">About</a>
+        <a href="programs.html" class="nav-link px-1 py-1 text-gray-300">Programs</a>
+        <a href="admissions.html" class="nav-link px-1 py-1 text-gray-300">Admissions</a>
+        <a href="student-services.html" class="nav-link px-1 py-1 text-gray-300">Student Services</a>
+        <a href="#" class="nav-link px-1 py-1 text-gray-300">News</a>
+        <a href="events.php" class="nav-link px-1 py-1 text-gray-300">Events</a>
+        <a href=".php" class="nav-link px-1 py-1 text-gray-300"></a>
+        <a href="online-admission.html" class="btn-sky px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+          <i class="fas fa-user-graduate"></i> Enroll Now!
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== ENROLL HERO ===== -->
+  <section class="enroll-hero">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <div class="flex-1 text-white">
+          <span class="inline-block bg-white/10 backdrop-blur-sm text-bcp-sky text-xs font-semibold px-5 py-2 rounded-full mb-6 border border-white/10">
+            <i class="fas fa-pencil-alt mr-2"></i> Enroll Now
+          </span>
+          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+            Start Your <span class="text-bcp-sky">Journey</span>
+          </h1>
+          <p class="text-lg text-[#b0d4e8] mt-4 max-w-lg leading-relaxed">
+            Join a community built to help you become the best — and get linked to success. Enrollment is quick, easy, and secure.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-8">
+            <a href="#application-form" class="btn-sky px-8 py-3 rounded-full font-bold flex items-center gap-2">
+              <i class="fas fa-pencil-alt"></i> Apply Now
+            </a>
+            <a href="programs.html" class="btn-outline-sky px-8 py-3 rounded-full font-bold flex items-center gap-2 text-white border-white/30 hover:bg-white/10">
+              <i class="fas fa-search"></i> Browse Programs
+            </a>
+          </div>
+        </div>
+        <div class="flex-1 w-full">
+          <div class="enrollment-banner-image">
+            <div class="enrollment-banner-content text-white">
+              <div class="text-bcp-sky text-sm font-semibold tracking-widest uppercase mb-2">
+                <i class="fas fa-calendar-check mr-2"></i> Enrollment is Ongoing
+              </div>
+              <h2 class="text-2xl md:text-3xl font-bold">Academic Year 2026-2027</h2>
+              <p class="text-[#b0d4e8] mt-2">Accepting: <span class="text-white font-semibold">Senior High School, Freshmen, Transferees & Returnees</span></p>
+              <div class="mt-4 flex items-center gap-2 text-sm text-[#b0d4e8]">
+                <i class="fas fa-info-circle text-bcp-sky"></i>
+                <span>For more details visit the Admissions Office</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ENROLLMENT FORM ===== -->
+  <section id="application-form" class="py-16 bg-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#4fc3f7]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#29b6f6]/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-4xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-10">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-file-alt mr-2"></i> Application Form</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#0a1e3d] mt-2">Enroll Now</h2>
+        <p class="text-[#1a3a6b] mt-2">Fill out the form below to start your application. All fields marked with <span class="text-red-500">*</span> are required.</p>
+      </div>
+
+      <!-- Success Message -->
+      <div v-if="isSubmitted" class="success-message fade-in">
+        <div class="icon"><i class="fas fa-check-circle"></i></div>
+        <h3>Application Submitted Successfully!</h3>
+        <p>Thank you for applying to Bestlink College of the Philippines. You will receive a confirmation email with your unique applicant number shortly.</p>
+        <p class="mt-2 text-sm text-[#1a3a6b]">Please check your email regularly for updates on your application status.</p>
+        <button @click="resetForm" class="mt-4 btn-sky px-6 py-2.5 rounded-full font-bold inline-flex items-center gap-2">
+          <i class="fas fa-plus"></i> Start New Application
+        </button>
+      </div>
+
+      <!-- Application Form -->
+      <form v-else @submit.prevent="submitForm" class="space-y-8">
+        <!-- Personal Information -->
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <h3 class="text-xl font-bold text-[#0a1e3d] mb-2">Personal Information</h3>
+          <p class="text-[#1a3a6b] text-sm mb-6">Please fill in all required fields</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="form-label">First Name <span class="required">*</span></label>
+              <input type="text" v-model="form.firstName" class="form-input" placeholder="Enter first name" required />
+            </div>
+            <div>
+              <label class="form-label">Last Name <span class="required">*</span></label>
+              <input type="text" v-model="form.lastName" class="form-input" placeholder="Enter last name" required />
+            </div>
+            <div>
+              <label class="form-label">Middle Name</label>
+              <input type="text" v-model="form.middleName" class="form-input" placeholder="Enter middle name" />
+            </div>
+            <div>
+              <label class="form-label">Suffix</label>
+              <input type="text" v-model="form.suffix" class="form-input" placeholder="e.g., Jr., Sr., III" />
+            </div>
+            <div>
+              <label class="form-label">Date of Birth <span class="required">*</span></label>
+              <input type="date" v-model="form.dateOfBirth" class="form-input" required />
+            </div>
+            <div>
+              <label class="form-label">Gender <span class="required">*</span></label>
+              <select v-model="form.gender" class="form-input" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Email Address <span class="required">*</span></label>
+              <input type="email" v-model="form.email" class="form-input" placeholder="you@example.com" required />
+            </div>
+            <div>
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" v-model="form.phone" class="form-input" placeholder="0912 345 6789" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Information -->
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <h3 class="text-xl font-bold text-[#0a1e3d] mb-2">Academic Information</h3>
+          <p class="text-[#1a3a6b] text-sm mb-6">Tell us about your educational background</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="form-label">Application Type <span class="required">*</span></label>
+              <select v-model="form.applicationType" class="form-input" required>
+                <option value="">Select Type</option>
+                <option value="freshmen">Freshmen</option>
+                <option value="transferee">Transferee</option>
+                <option value="returnee">Returnee</option>
+                <option value="senior-high">Senior High School</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Program / Strand <span class="required">*</span></label>
+              <select v-model="form.program" class="form-input" required>
+                <option value="">Select Program</option>
+                <option value="bsit">BS Information Technology</option>
+                <option value="bshm">BS Hospitality Management</option>
+                <option value="bsoa">BS Office Administration</option>
+                <option value="bsba">BS Business Administration</option>
+                <option value="bscrim">BS Criminology</option>
+                <option value="beed">Bachelor of Elementary Education</option>
+                <option value="bsed">Bachelor of Secondary Education</option>
+                <option value="bscpe">BS Computer Engineering</option>
+                <option value="bstm">BS Tourism Management</option>
+                <option value="bsent">BS Entrepreneurship</option>
+                <option value="bsais">BS Accounting Information System</option>
+                <option value="bspsych">BS Psychology</option>
+                <option value="blis">BL Information Science</option>
+                <option value="stem">STEM - Senior High</option>
+                <option value="abm">ABM - Senior High</option>
+                <option value="humss">HUMSS - Senior High</option>
+                <option value="tvl">TVL - Senior High</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Learning Modality <span class="required">*</span></label>
+              <select v-model="form.modality" class="form-input" required>
+                <option value="">Select Modality</option>
+                <option value="online">Pure Online</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="face-to-face">Face-to-Face</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Preferred Campus <span class="required">*</span></label>
+              <select v-model="form.campus" class="form-input" required>
+                <option value="">Select Campus</option>
+                <option value="main">Main Campus, Quezon City</option>
+                <option value="millionaire">Millionaire's Village, Quezon City</option>
+                <option value="bulacan">Bulacan Campus</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Previous School</label>
+              <input type="text" v-model="form.previousSchool" class="form-input" placeholder="Name of previous school" />
+            </div>
+            <div>
+              <label class="form-label">School Year Graduated</label>
+              <input type="text" v-model="form.graduationYear" class="form-input" placeholder="e.g., 2025-2026" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <h3 class="text-xl font-bold text-[#0a1e3d] mb-2">Address</h3>
+          <p class="text-[#1a3a6b] text-sm mb-6">Provide your current address</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="form-label">Street Address <span class="required">*</span></label>
+              <input type="text" v-model="form.street" class="form-input" placeholder="Street, Barangay" required />
+            </div>
+            <div>
+              <label class="form-label">City / Municipality <span class="required">*</span></label>
+              <input type="text" v-model="form.city" class="form-input" placeholder="City" required />
+            </div>
+            <div>
+              <label class="form-label">Province <span class="required">*</span></label>
+              <input type="text" v-model="form.province" class="form-input" placeholder="Province" required />
+            </div>
+            <div>
+              <label class="form-label">Postal Code</label>
+              <input type="text" v-model="form.postalCode" class="form-input" placeholder="Postal Code" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Documents -->
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <h3 class="text-xl font-bold text-[#0a1e3d] mb-2">Upload Documents</h3>
+          <p class="text-[#1a3a6b] text-sm mb-6">Upload the required documents for your application</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="form-label">Form 138 (Report Card)</label>
+              <input type="file" class="form-input p-2" accept=".pdf,.jpg,.png" />
+            </div>
+            <div>
+              <label class="form-label">PSA Birth Certificate</label>
+              <input type="file" class="form-input p-2" accept=".pdf,.jpg,.png" />
+            </div>
+            <div>
+              <label class="form-label">Certificate of Good Moral</label>
+              <input type="file" class="form-input p-2" accept=".pdf,.jpg,.png" />
+            </div>
+            <div>
+              <label class="form-label">ID Picture (2x2 / Passport Size)</label>
+              <input type="file" class="form-input p-2" accept=".jpg,.png" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms & Submit -->
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <div class="flex items-start gap-3">
+            <input type="checkbox" v-model="form.agreeTerms" class="mt-1 w-5 h-5 text-bcp-sky rounded border-gray-300 focus:ring-bcp-sky" required />
+            <label class="text-sm text-[#1a3a6b]">
+              I agree to the <a href="#" class="text-bcp-sky font-semibold hover:underline">Terms and Conditions</a> and confirm that all information provided is true and correct. <span class="text-red-500">*</span>
+            </label>
+          </div>
+          <div class="flex items-start gap-3 mt-3">
+            <input type="checkbox" v-model="form.agreePrivacy" class="mt-1 w-5 h-5 text-bcp-sky rounded border-gray-300 focus:ring-bcp-sky" required />
+            <label class="text-sm text-[#1a3a6b]">
+              I understand that my personal data will be processed in accordance with the <a href="#" class="text-bcp-sky font-semibold hover:underline">Privacy Policy</a>. <span class="text-red-500">*</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+          <button type="submit" class="btn-sky px-10 py-4 rounded-full font-bold text-lg flex items-center gap-3">
+            <i class="fas fa-paper-plane"></i> Submit Application
+          </button>
+          <button type="reset" class="btn-outline-sky px-10 py-4 rounded-full font-bold text-lg">
+            <i class="fas fa-undo"></i> Clear All
+          </button>
+        </div>
+
+        <p class="text-sm text-[#1a3a6b] text-center">
+          <i class="fas fa-lock text-bcp-sky mr-1"></i> Your information is secure and will be kept confidential.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <div class="bg-bcp-deep text-white py-16 my-6 rounded-[4rem] rounded-b-3xl mx-4 md:mx-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#4fc3f7]/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#29b6f6]/10 rounded-full blur-2xl"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-wrap justify-around items-center gap-8 text-center">
+      <div>
+        <div class="stat-number text-5xl">45,000+</div>
+        <div class="font-light opacity-80 mt-1">Students</div>
+        <div class="text-xs opacity-50">A thriving learning community across all programs and campuses.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">2002</div>
+        <div class="font-light opacity-80 mt-1">Established</div>
+        <div class="text-xs opacity-50">Founded in June 2002 — over two decades of quality education.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">3</div>
+        <div class="font-light opacity-80 mt-1">Campuses</div>
+        <div class="text-xs opacity-50">Millionaire's Village, Main, and Bulacan campuses serving learners.</div>
+      </div>
+      <div class="glass px-8 py-4 rounded-full flex items-center gap-4 border border-white/10">
+        <img src="assets/bcp-logo.png" alt="BCP" class="h-10 w-auto" />
+        <span class="font-bold tracking-wider text-lg">BCP</span>
+        <span class="opacity-30">|</span>
+        <span class="font-light">PHILIPPINES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-[#0a1e3d] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <a href="index.html">
+              <img src="assets/bcp-logo.png" alt="Bestlink College of the Philippines logo" class="h-12 w-auto" />
+            </a>
+            <a href="index.html" class="font-bold text-lg hover:text-bcp-sky transition-colors">BCP</a>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            At Bestlink College of the Philippines, We provide and promote quality education with modern and unique techniques to able to enhance the skill and the knowledge of our dear students to make them globally competitive and productive citizens.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">EXPLORE</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="about.html" class="footer-link">About</a></li>
+            <li><a href="programs.html" class="footer-link">Programs</a></li>
+            <li><a href="admissions.html" class="footer-link">Admissions</a></li>
+            <li><a href="student-services.html" class="footer-link">Student Services</a></li>
+            <li><a href="#" class="footer-link">News</a></li>
+            <li><a href="events.php" class="footer-link">Events</a></li>
+            <li><a href="contact.php" class="footer-link">Contact</a></li>
+            <li><a href="#" class="footer-link">Gallery</a></li>
+            <li><a href="#" class="footer-link">Careers</a></li>
+            <li><a href="#" class="footer-link">Scholarships</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">USEFUL LINKS</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="#" class="footer-link">BCP College LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SHS LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SMS</a></li>
+            <li><a href="#" class="footer-link">BCP Student E-Mail</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">CONTACT</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-bcp-sky mt-1"></i> #1071 Brgy. Kaligayahan, Quirino Highway, Novaliches Quezon City, Philippines 1123</li>
+            <li class="flex gap-3"><i class="fas fa-envelope text-bcp-sky mt-1"></i> bcp-inquiry@bcp.edu.ph</li>
+            <li class="flex gap-3"><i class="fas fa-phone text-bcp-sky mt-1"></i> 7000-5317 · 8442-8601</li>
+          </ul>
+          <div class="flex gap-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 flex flex-wrap justify-between items-center text-sm text-gray-400">
+        <span>© Copyright BCP. All Rights Reserved</span>
+        <span>Developed by BCP MIS Department</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== VUE APP ===== -->
+<script>
+  const { createApp, ref, onMounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const isSubmitted = ref(false);
+      
+      const form = ref({
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        suffix: '',
+        dateOfBirth: '',
+        gender: '',
+        email: '',
+        phone: '',
+        applicationType: '',
+        program: '',
+        modality: '',
+        campus: '',
+        previousSchool: '',
+        graduationYear: '',
+        street: '',
+        city: '',
+        province: '',
+        postalCode: '',
+        agreeTerms: false,
+        agreePrivacy: false
+      });
+
+      const submitForm = () => {
+        isSubmitted.value = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const resetForm = () => {
+        isSubmitted.value = false;
+        form.value = {
+          firstName: '',
+          lastName: '',
+          middleName: '',
+          suffix: '',
+          dateOfBirth: '',
+          gender: '',
+          email: '',
+          phone: '',
+          applicationType: '',
+          program: '',
+          modality: '',
+          campus: '',
+          previousSchool: '',
+          graduationYear: '',
+          street: '',
+          city: '',
+          province: '',
+          postalCode: '',
+          agreeTerms: false,
+          agreePrivacy: false
+        };
+      };
+
+      onMounted(() => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.from('h1', { opacity: 0, y: 40, duration: 0.8 })
+          .from('.inline-block', { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
+          .from('.text-lg', { opacity: 0, y: 20, duration: 0.6 }, '-=0.3')
+          .from('.enrollment-banner-image', { opacity: 0, scale: 0.95, duration: 0.8 }, '-=0.2');
+
+        gsap.from('.bg-\\[\\#f8faff\\]', {
+          scrollTrigger: { trigger: '.bg-\\[\\#f8faff\\]', start: 'top 85%' },
+          opacity: 0,
+          y: 30,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out'
+        });
+
+        gsap.from('.stat-number', {
+          scrollTrigger: { trigger: '.stat-number', start: 'top 90%' },
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out'
+        });
+      });
+
+      return {
+        isSubmitted,
+        form,
+        submitForm,
+        resetForm
+      };
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>
