@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Admission · Bestlink College of the Philippines</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    .bg-bcp-deep { background: #0a1e3d; }
+    .bg-bcp-mid { background: #1a3a6b; }
+    .bg-bcp-light { background: #eef4fc; }
+    .text-bcp-sky { color: #4fc3f7; }
+    .border-bcp-sky { border-color: #4fc3f7; }
+    .bg-bcp-sky { background: #4fc3f7; }
+
+    .glass-dark {
+      background: rgba(10, 30, 61, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-sky {
+      background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+      color: #0a1e3d;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+    }
+    .btn-sky:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px -8px rgba(79, 195, 247, 0.5);
+    }
+
+    .btn-outline-sky {
+      border: 2px solid #4fc3f7;
+      color: #0a1e3d;
+      background: transparent;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-outline-sky:hover {
+      background: #4fc3f7;
+      color: #0a1e3d;
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -12px rgba(79, 195, 247, 0.3);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4fc3f7;
+      transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: #4fc3f7; }
+
+    .admission-hero {
+      background: linear-gradient(135deg, #0a1e3d 0%, #1a3a6b 50%, #0a1e3d 100%);
+      padding: 140px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .admission-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79, 195, 247, 0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.75rem;
+      border: 1px solid rgba(79, 195, 247, 0.08);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 100%;
+    }
+    .info-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px -12px rgba(10, 30, 61, 0.12);
+      border-color: rgba(79, 195, 247, 0.2);
+    }
+    .info-card .info-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.12), rgba(79, 195, 247, 0.04));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #4fc3f7;
+      margin-bottom: 1rem;
+    }
+    .info-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0a1e3d;
+      margin-bottom: 0.5rem;
+    }
+    .info-card p {
+      color: #1a3a6b;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .req-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      border: 1px solid #e2ebf6;
+      margin-bottom: 2rem;
+    }
+    .req-section .req-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f0f4fa;
+    }
+    .req-section .req-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0a1e3d;
+    }
+    .req-section .req-header .badge {
+      background: #eef4fc;
+      color: #0a1e3d;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.15rem 0.8rem;
+      border-radius: 40px;
+      letter-spacing: 0.5px;
+    }
+    .req-section .req-sub {
+      font-weight: 600;
+      color: #0a1e3d;
+      font-size: 0.95rem;
+      margin: 1rem 0 0.5rem 0;
+    }
+    .req-section ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem 1.5rem;
+    }
+    .req-section ul li {
+      padding: 0.3rem 0;
+      color: #1a3a6b;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .req-section ul li i {
+      color: #4fc3f7;
+      font-size: 0.7rem;
+    }
+    @media (max-width: 640px) {
+      .req-section ul {
+        grid-template-columns: 1fr;
+      }
+      .req-section {
+        padding: 1.25rem;
+      }
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #4fc3f7;
+      display: inline-block;
+    }
+
+    .footer-link {
+      transition: color 0.3s;
+    }
+    .footer-link:hover {
+      color: #4fc3f7;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 61, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 28px;
+      max-width: 640px;
+      width: 100%;
+      padding: 2.5rem;
+      transform: scale(0.9) translateY(30px);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+    .modal-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0a1e3d;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .modal-content h2 i {
+      color: #4fc3f7;
+    }
+    .modal-content .modal-body {
+      color: #1a3a6b;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .modal-content .modal-body strong {
+      color: #0a1e3d;
+    }
+    .modal-content .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      border-top: 1px solid #e2ebf6;
+      padding-top: 1.5rem;
+    }
+
+    .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .modal-content::-webkit-scrollbar-track {
+      background: #f0f4fa;
+      border-radius: 10px;
+    }
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #4fc3f7;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .modal-content {
+        padding: 1.5rem;
+      }
+      .modal-content .modal-actions {
+        flex-direction: column;
+      }
+      .modal-content .modal-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ===== TOP NAV ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-dark text-white py-3 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html">
+          <img src="../assets/bcp-logo.png" alt="BCP Logo" class="h-11 w-auto object-contain" />
+        </a>
+        <a href="index.html" class="text-sm font-light hidden sm:inline hover:text-bcp-sky transition-colors">
+          <span class="font-semibold">Bestlink</span> College of the Philippines
+        </a>
+      </div>
+      <nav class="flex flex-wrap items-center gap-3 md:gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link px-1 py-1 text-gray-300">Home</a>
+        <a href="about.html" class="nav-link px-1 py-1 text-gray-300">About</a>
+        <a href="programs.html" class="nav-link px-1 py-1 text-gray-300">Programs</a>
+        <a href="admissions.html" class="nav-link px-1 py-1 text-gray-300">Admissions</a>
+        <a href="student-services.html" class="nav-link px-1 py-1 text-gray-300">Student Services</a>
+        <a href="#" class="nav-link px-1 py-1 text-gray-300">News</a>
+        <a href="events.php" class="nav-link px-1 py-1 text-gray-300">Events</a>
+        <a href="contact.php" class="nav-link px-1 py-1 text-gray-300">Contact</a>
+        <a href="online-admission.html" class="btn-sky px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+          <i class="fas fa-user-graduate"></i> Enroll Now!
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="admission-hero">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center text-white">
+        <span class="inline-block bg-white/10 backdrop-blur-sm text-bcp-sky text-xs font-semibold px-5 py-2 rounded-full mb-6 border border-white/10">
+          <i class="fas fa-door-open mr-2"></i> Bestlink College of the Philippines
+        </span>
+        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+          Enrollment Management <span class="text-bcp-sky">System</span>
+        </h1>
+        <p class="text-lg text-[#b0d4e8] mt-4 max-w-2xl mx-auto leading-relaxed">
+          The Admission's online application process is quick, easy and secure. Start your application now, save your work, and complete it later.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== APPLICATION PROCESS ===== -->
+  <section class="py-16 bg-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#4fc3f7]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#29b6f6]/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-12">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-list-ol mr-2"></i> Application Process</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#0a1e3d] mt-3">How to Apply</h2>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6] mb-8">
+          <p class="text-[#1a3a6b] text-lg leading-relaxed">
+            The Admission's online application process is quick, easy and secure. You can start filling in your application now, save your work, and complete it later. You will receive a unique applicant number, which allows you to access your personal application, change it and add documents and submit or start new applications any time you want.
+          </p>
+        </div>
+
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <h3 class="text-xl font-bold text-[#0a1e3d] mb-4">Before You Start</h3>
+          <p class="text-[#1a3a6b] mb-4">There are some basic requirements you should keep in mind before you start filling in your application.</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <i class="fas fa-check-circle text-bcp-sky mt-1"></i>
+              <span class="text-[#1a3a6b]">You will graduate from Junior High School this year or have already graduated.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-check-circle text-bcp-sky mt-1"></i>
+              <span class="text-[#1a3a6b]">You want to study and develop yourself in a new environment.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-check-circle text-bcp-sky mt-1"></i>
+              <span class="text-[#1a3a6b]">You are able to write and communicate in the language the studies are conducted in.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-check-circle text-bcp-sky mt-1"></i>
+              <span class="text-[#1a3a6b]">You will graduate ALS – Alternative Learning System, PEPT - Philippine Educational Placement Test</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PURE ONLINE MODALITY ===== -->
+  <section class="py-16 bg-[#eef4fc] relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-12">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-laptop mr-2"></i> Learning Modality</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#0a1e3d] mt-3">Pure Online Modality</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#e2ebf6]">
+          <h4 class="text-lg font-bold text-[#0a1e3d] mb-4"><i class="fas fa-user-check text-bcp-sky mr-2"></i> Who are ALLOWED to enroll?</h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <span class="text-bcp-sky font-bold">1.</span>
+              <span class="text-[#1a3a6b] text-sm">Those previously enrolled and willing to finish their studies but cannot attend the limited face-to-face modality due to their distance to the school and work schedules.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-bcp-sky font-bold">2.</span>
+              <span class="text-[#1a3a6b] text-sm">Future enrollees considered as returnees or working abroad who had to drop out from school due to their present status.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-bcp-sky font-bold">3.</span>
+              <span class="text-[#1a3a6b] text-sm">Those who are not fully vaccinated.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-bcp-sky font-bold">4.</span>
+              <span class="text-[#1a3a6b] text-sm">Regular students with <span class="font-semibold">NO BACK SUBJECTS</span>.</span>
+            </li>
+            <li class="flex items-start gap-3 bg-red-50 p-3 rounded-xl border-l-4 border-red-400">
+              <span class="text-red-500 font-bold">5.</span>
+              <span class="text-[#1a3a6b] text-sm"><span class="font-semibold">IRREGULAR</span> and <span class="font-semibold">TRANSFEREE STUDENTS</span> are <span class="text-red-500 font-semibold">NOT allowed</span> to enroll into the Pure Online Modality.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#e2ebf6]">
+          <h4 class="text-lg font-bold text-[#0a1e3d] mb-4"><i class="fas fa-list text-bcp-sky mr-2"></i> Pure Online Modality Guidelines</h4>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <i class="fas fa-circle text-bcp-sky text-xs mt-1.5"></i>
+              <span class="text-[#1a3a6b] text-sm">Students will need to access the Learning Management System (LMS) to read lessons, answer quizzes, do activities, and take examinations.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-circle text-bcp-sky text-xs mt-1.5"></i>
+              <span class="text-[#1a3a6b] text-sm">Students will have 3-hour monthly virtual consultation meetings with their subject teachers for each subject.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-circle text-bcp-sky text-xs mt-1.5"></i>
+              <span class="text-[#1a3a6b] text-sm">There should be at least 5 students enrolled per program per year level using the Pure Online Modality.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fas fa-circle text-bcp-sky text-xs mt-1.5"></i>
+              <span class="text-[#1a3a6b] text-sm">Students who will be SHIFTING from the Hybrid Modality to the Pure Online Modality within the semester need to get the approval from their respective program heads.</span>
+            </li>
+          </ul>
+          <div class="mt-4 bg-[#f8faff] p-4 rounded-xl border-l-4 border-bcp-sky">
+            <p class="text-[#1a3a6b] text-sm">Once completed the registration, the Pure Online coordinator will contact the student to assist with the enrollment process.</p>
+            <p class="text-[#1a3a6b] text-sm mt-2">Kindly visit the Social Media Office MV Campus and look for <span class="font-semibold">Mr. Johnnel Castro</span> to get the Approval sheet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FIND YOUR PROGRAM ===== -->
+  <section class="py-16 bg-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <div class="info-icon bg-bcp-sky/10 text-bcp-sky w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-4">
+            <i class="fas fa-search"></i>
+          </div>
+          <h4 class="text-xl font-bold text-[#0a1e3d]">Find a track or course of your interest</h4>
+          <p class="text-[#1a3a6b] mt-2">The first thing you have to do to get started with the application process is to find a track/strand or course that interests you. You can use the course finder to sort through all the different opportunities. Next to the course listing, you will find buttons to start the application.</p>
+          <a href="programs.html" class="inline-flex items-center gap-2 mt-4 text-bcp-sky font-semibold hover:gap-3 transition-all">
+            Browse Programs <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+          <div class="info-icon bg-bcp-sky/10 text-bcp-sky w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-4">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h4 class="text-xl font-bold text-[#0a1e3d]">Fill in and submit an online application form</h4>
+          <p class="text-[#1a3a6b] mt-2">In the online application form, you have to submit personal information, academic results and a reference(s) from your teacher(s).</p>
+          <a href="#" @click.prevent="openModal" class="inline-flex items-center gap-2 mt-4 text-bcp-sky font-semibold hover:gap-3 transition-all">
+            Start Application <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REQUIREMENTS ===== -->
+  <section class="py-16 bg-[#eef4fc] relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-10">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-file-alt mr-2"></i> Documents</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#0a1e3d] mt-3">Required Documents</h2>
+        <p class="text-[#1a3a6b] max-w-2xl mx-auto mt-3 text-lg">Original copy of the following documents are required for your application.</p>
+      </div>
+
+      <div class="req-section fade-in delay-1">
+        <div class="req-header">
+          <i class="fas fa-graduation-cap text-bcp-sky text-xl"></i>
+          <h3>College</h3>
+          <span class="badge">Freshmen & Transferee</span>
+        </div>
+        <div class="req-sub">Original Copy of the following documents:</div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> Form 138 (Report Card)</li>
+          <li><i class="fas fa-check-circle"></i> Form 137</li>
+          <li><i class="fas fa-check-circle"></i> Certificate of Good Moral</li>
+          <li><i class="fas fa-check-circle"></i> PSA Authenticated Birth Certificate</li>
+          <li><i class="fas fa-check-circle"></i> Passport Size ID Picture (White Background, Formal Attire) - 2pcs.</li>
+          <li><i class="fas fa-check-circle"></i> Barangay Clearance</li>
+        </ul>
+        <div class="mt-4 pt-4 border-t border-[#eef4fc]">
+          <p class="text-sm font-semibold text-[#0a1e3d]">For Transferees, additional requirements:</p>
+          <ul class="mt-2">
+            <li><i class="fas fa-check-circle"></i> Transcript of Records from Previous School</li>
+            <li><i class="fas fa-check-circle"></i> Honorable Dismissal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="req-section fade-in delay-2">
+        <div class="req-header">
+          <i class="fas fa-school text-bcp-sky text-xl"></i>
+          <h3>Senior High School</h3>
+          <span class="badge">Grade 11 & 12</span>
+        </div>
+        <div class="req-sub">Original Copy of the following documents:</div>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> Form 138 (Report Card)</li>
+          <li><i class="fas fa-check-circle"></i> Form 137</li>
+          <li><i class="fas fa-check-circle"></i> Certificate of Good Moral</li>
+          <li><i class="fas fa-check-circle"></i> 2"x2" ID Picture (White Background) - 2pcs.</li>
+          <li><i class="fas fa-check-circle"></i> Photocopy of NCAE Result</li>
+          <li><i class="fas fa-check-circle"></i> ESC Certificate (if graduate of a private Junior High School)</li>
+          <li><i class="fas fa-check-circle"></i> PSA Authenticated Birth Certificate</li>
+          <li><i class="fas fa-check-circle"></i> Barangay Clearance</li>
+          <li><i class="fas fa-check-circle"></i> Photocopy of Diploma</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IMPORTANT REMINDERS ===== -->
+  <section class="py-16 bg-white relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 relative z-10">
+      <div class="bg-[#f8faff] rounded-2xl p-6 md:p-8 border border-[#e2ebf6]">
+        <h3 class="text-xl font-bold text-[#0a1e3d] mb-4"><i class="fas fa-exclamation-triangle text-bcp-sky mr-2"></i> Important Reminders</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <i class="fas fa-envelope text-bcp-sky mt-1"></i>
+            <span class="text-[#1a3a6b] text-sm">During your application process, please provide a valid personal email address. This email will be used by the Admissions and Registrar's Office to communicate with you. It is crucial that you regularly check your email for important updates, including instructions, acceptance notifications, the application link, and login credentials for your student accounts.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-edit text-bcp-sky mt-1"></i>
+            <span class="text-[#1a3a6b] text-sm">Our personnel are not allowed to correct any mistake in your application. After the application is accepted, it is forwarded directly to the proper authorities. Please make sure that all information presented in the application form are correct and error-free.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-undo text-bcp-sky mt-1"></i>
+            <span class="text-[#1a3a6b] text-sm">If there are still significant mistakes in the application, the Admission's Office will not accept the application. In this case the application is sent back to the applicant with directions so the applicant could correct the mistakes. If the mistakes are corrected, the application must be resubmitted by the applicant.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-lock text-bcp-sky mt-1"></i>
+            <span class="text-[#1a3a6b] text-sm">Your privacy is important to us. The information that you entered in your application form will remain strictly confidential and we will only use them to contact you regarding your application.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-wifi text-bcp-sky mt-1"></i>
+            <span class="text-[#1a3a6b] text-sm">Your online readiness is also important to us. With the challenge that we are in right now, we would like to understand if you are ready for any of our learning modalities. Do not worry if you are not ready as of this time. We will give you enough time to prepare for your most convenient modality based on what we are offering.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-8 bg-gradient-to-r from-[#0a1e3d] to-[#1a3a6b] rounded-2xl p-6 md:p-8 text-white">
+        <h3 class="text-xl font-bold mb-3"><i class="fas fa-envelope-open-text text-bcp-sky mr-2"></i> Letter of Acceptance</h3>
+        <p class="text-[#b0d4e8]">After successfully completing the earlier parts of the enrolment process, you will receive an official e-mail of acceptance from us.</p>
+        <p class="text-[#b0d4e8] mt-2">The letter of acceptance can be conditional or unconditional.</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4 mt-10">
+        <a href="#" class="btn-sky px-8 py-3 rounded-full font-bold flex items-center gap-2">
+          <i class="fas fa-check-circle"></i> Check your DepEd Voucher Eligibility
+        </a>
+        <a href="#" @click.prevent="openModal" class="btn-sky px-8 py-3 rounded-full font-bold flex items-center gap-2">
+          <i class="fas fa-pencil-alt"></i> Proceed to Online Application
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <div class="bg-bcp-deep text-white py-16 my-6 rounded-[4rem] rounded-b-3xl mx-4 md:mx-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#4fc3f7]/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#29b6f6]/10 rounded-full blur-2xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-wrap justify-around items-center gap-8 text-center">
+      <div>
+        <div class="stat-number text-5xl">45,000+</div>
+        <div class="font-light opacity-80 mt-1">Students</div>
+        <div class="text-xs opacity-50">A thriving learning community across all programs and campuses.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">2002</div>
+        <div class="font-light opacity-80 mt-1">Established</div>
+        <div class="text-xs opacity-50">Founded in June 2002 — over two decades of quality education.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">3</div>
+        <div class="font-light opacity-80 mt-1">Campuses</div>
+        <div class="text-xs opacity-50">Millionaire's Village, Main, and Bulacan campuses serving learners.</div>
+      </div>
+      <div class="glass px-8 py-4 rounded-full flex items-center gap-4 border border-white/10">
+        <img src="../assets/bcp-logo.png" alt="BCP" class="h-10 w-auto" />
+        <span class="font-bold tracking-wider text-lg">BCP</span>
+        <span class="opacity-30">|</span>
+        <span class="font-light">PHILIPPINES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-[#0a1e3d] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <a href="index.html">
+              <img src="../assets/bcp-logo.png" alt="Bestlink College of the Philippines logo" class="h-12 w-auto" />
+            </a>
+            <a href="index.html" class="font-bold text-lg hover:text-bcp-sky transition-colors">BCP</a>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            At Bestlink College of the Philippines, We provide and promote quality education with modern and unique techniques to able to enhance the skill and the knowledge of our dear students to make them globally competitive and productive citizens.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">EXPLORE</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="about.html" class="footer-link">About</a></li>
+            <li><a href="programs.html" class="footer-link">Programs</a></li>
+            <li><a href="admissions.html" class="footer-link">Admissions</a></li>
+            <li><a href="student-services.html" class="footer-link">Student Services</a></li>
+            <li><a href="#" class="footer-link">News</a></li>
+            <li><a href="events.php" class="footer-link">Events</a></li>
+            <li><a href="contact.php" class="footer-link">Contact</a></li>
+            <li><a href="#" class="footer-link">Gallery</a></li>
+            <li><a href="#" class="footer-link">Careers</a></li>
+            <li><a href="#" class="footer-link">Scholarships</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">USEFUL LINKS</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="#" class="footer-link">BCP College LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SHS LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SMS</a></li>
+            <li><a href="#" class="footer-link">BCP Student E-Mail</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">CONTACT</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-bcp-sky mt-1"></i> #1071 Brgy. Kaligayahan, Quirino Highway, Novaliches Quezon City, Philippines 1123</li>
+            <li class="flex gap-3"><i class="fas fa-envelope text-bcp-sky mt-1"></i> bcp-inquiry@bcp.edu.ph</li>
+            <li class="flex gap-3"><i class="fas fa-phone text-bcp-sky mt-1"></i> 7000-5317 · 8442-8601</li>
+          </ul>
+          <div class="flex gap-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 flex flex-wrap justify-between items-center text-sm text-gray-400">
+        <span>BCP Online Admission © 2026</span>
+        <span>Developed by BCP MIS Department</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== TERMS & CONDITIONS MODAL ===== -->
+  <div class="modal-overlay" :class="{ active: showModal }" @click.self="closeModal">
+    <div class="modal-content">
+      <h2><i class="fas fa-file-contract"></i> Terms and Conditions</h2>
+      <div class="modal-body">
+        <p><strong>Statement of Privacy Policy</strong></p>
+        <p class="mt-3">
+          We are committed to abide by and adhere to the provisions of Philippine Republic Act No. 10173, also known as, the Data Privacy Act of 2012 and its Implementing Rules and Regulations. The school commits itself to protect the privacy of its data subjects (individuals it deals with, current, past, and prospective) as well as to ensure that the personal data gathered as provided by such subjects shall be safeguarded and secured while under its control and custody.
+        </p>
+        <p class="mt-3">
+          This data privacy policy will outline how the data gathered will be properly utilized and the process of doing so; the measures to be undertaken for purposes of keeping it secure, its appropriate use and disposal when no longer deemed necessary; and provide information to the data subjects about their rights under RA #10173.
+        </p>
+        <p class="mt-3">
+          For the above purpose this Data Privacy Notice and Consent Form may be amended at any time without prior notice, and such amendments will be notified to you via the school's official website or email.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <button @click="closeModal" class="btn-outline-sky px-8 py-2.5 rounded-full font-bold">
+          Cancel
+        </button>
+        <button @click="agreeTerms" class="btn-sky px-8 py-2.5 rounded-full font-bold">
+          <i class="fas fa-check mr-2"></i> Agree
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const { createApp, ref, onMounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const showModal = ref(false);
+
+      const openModal = () => {
+        showModal.value = true;
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeModal = () => {
+        showModal.value = false;
+        document.body.style.overflow = '';
+      };
+
+      const agreeTerms = () => {
+        closeModal();
+        window.location.href = 'selecting-year.html';
+      };
+
+      onMounted(() => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.from('h1', { opacity: 0, y: 40, duration: 0.8 })
+          .from('.inline-block', { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
+          .from('.text-lg', { opacity: 0, y: 20, duration: 0.6 }, '-=0.3');
+
+        gsap.from('.req-section', {
+          scrollTrigger: { trigger: '.req-section', start: 'top 85%' },
+          opacity: 0,
+          y: 30,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'power2.out'
+        });
+
+        gsap.from('.stat-number', {
+          scrollTrigger: { trigger: '.stat-number', start: 'top 90%' },
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out'
+        });
+      });
+
+      return {
+        showModal,
+        openModal,
+        closeModal,
+        agreeTerms
+      };
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>

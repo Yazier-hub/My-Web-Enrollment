@@ -1,0 +1,18 @@
+# .htaccess - LMS Enrollment Pretty URLs
+
+Options -Indexes
+RewriteEngine On
+
+# Allow real files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Root → pages/index.html
+RewriteRule ^$ pages/index.html [L]
+
+# /contact.php → /pages/contact.php (and all other .php)
+RewriteRule ^([a-zA-Z0-9_-]+\.php)$ pages/$1 [L]
+
+# /about.html → /pages/about.html (and all other .html)
+RewriteRule ^([a-zA-Z0-9_-]+\.html)$ pages/$1 [L]

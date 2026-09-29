@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCP · Bestlink College Enrollment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    .bg-bcp-deep { background: #0a1e3d; }
+    .bg-bcp-mid { background: #1a3a6b; }
+    .bg-bcp-light { background: #eef4fc; }
+    .text-bcp-sky { color: #4fc3f7; }
+    .border-bcp-sky { border-color: #4fc3f7; }
+    .bg-bcp-sky { background: #4fc3f7; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .glass-dark {
+      background: rgba(10, 30, 61, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-sky {
+      background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+      color: #0a1e3d;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+    }
+    .btn-sky:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px -8px rgba(79, 195, 247, 0.5);
+    }
+
+    .btn-outline-sky {
+      border: 2px solid #4fc3f7;
+      color: #0a1e3d;
+      background: transparent;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-outline-sky:hover {
+      background: #4fc3f7;
+      color: #0a1e3d;
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -12px rgba(79, 195, 247, 0.3);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4fc3f7;
+      transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: #4fc3f7; }
+
+    .program-card {
+      background: white;
+      border-radius: 28px;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid rgba(79, 195, 247, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .program-card:hover::before { opacity: 1; }
+    .program-card:hover {
+      transform: translateY(-12px) scale(1.01);
+      box-shadow: 0 40px 60px -20px rgba(10, 30, 61, 0.25);
+      border-color: #4fc3f7;
+    }
+
+    .program-card .icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(79, 195, 247, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #4fc3f7;
+      transition: all 0.4s;
+    }
+    .program-card:hover .icon-wrap {
+      transform: rotate(-8deg) scale(1.1);
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.3), rgba(79, 195, 247, 0.1));
+    }
+
+    .program-tag {
+      background: rgba(79, 195, 247, 0.12);
+      color: #0a1e3d;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    .program-card:hover .program-tag {
+      background: rgba(79, 195, 247, 0.25);
+    }
+
+    .feature-badge {
+      background: rgba(79, 195, 247, 0.08);
+      color: #0a1e3d;
+      border-radius: 40px;
+      padding: 0.15rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .program-card:hover .feature-badge {
+      background: rgba(79, 195, 247, 0.18);
+    }
+
+    .why-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.75rem 1.5rem;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid rgba(79, 195, 247, 0.08);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(10, 30, 61, 0.04);
+    }
+    .why-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .why-card:hover::before { transform: scaleX(1); }
+    .why-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -12px rgba(10, 30, 61, 0.15);
+      border-color: rgba(79, 195, 247, 0.2);
+    }
+    .why-card .why-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.12), rgba(79, 195, 247, 0.04));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #4fc3f7;
+      transition: all 0.4s;
+      flex-shrink: 0;
+    }
+    .why-card:hover .why-icon {
+      transform: scale(1.1) rotate(-4deg);
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.25), rgba(79, 195, 247, 0.1));
+    }
+    .why-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0a1e3d;
+    }
+    .why-card p {
+      font-size: 0.9rem;
+      color: #1a3a6b;
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    .spirit-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid rgba(79, 195, 247, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .spirit-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(79, 195, 247, 0.05), transparent);
+      border-radius: 50%;
+      transition: all 0.6s;
+    }
+    .spirit-card:hover::before { transform: scale(1.5); }
+    .spirit-card .spirit-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(79, 195, 247, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #4fc3f7;
+      transition: all 0.4s;
+    }
+    .spirit-card:hover .spirit-icon {
+      transform: scale(1.1) rotate(-6deg);
+    }
+
+    .hero-image-bg {
+      background-image: url('../assets/bg2.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 380px;
+      position: relative;
+      border-radius: 32px;
+      overflow: hidden;
+    }
+    .hero-image-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10, 30, 61, 0.5), rgba(10, 30, 61, 0.2));
+    }
+    .hero-image-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+      min-height: 380px;
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #4fc3f7;
+      display: inline-block;
+    }
+
+    @keyframes pulse-soft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+    .float-shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    .footer-link {
+      transition: color 0.3s;
+    }
+    .footer-link:hover {
+      color: #4fc3f7;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ===== TOP NAV ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-dark text-white py-3 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html">
+          <img src="../assets/bcp-logo.png" alt="BCP Logo" class="h-11 w-auto object-contain" />
+        </a>
+        <a href="index.html" class="text-sm font-light hidden sm:inline hover:text-bcp-sky transition-colors">
+          <span class="font-semibold">Bestlink</span> College of the Philippines
+        </a>
+      </div>
+      <nav class="flex flex-wrap items-center gap-3 md:gap-6 text-sm font-medium">
+        <a href="index.html" class="nav-link px-1 py-1 text-bcp-sky">Home</a>
+        <a href="about.html" class="nav-link px-1 py-1 text-gray-300">About</a>
+        <a href="programs.html" class="nav-link px-1 py-1 text-gray-300">Programs</a>
+        <a href="admissions.html" class="nav-link px-1 py-1 text-gray-300">Admissions</a>
+        <a href="student-services.html" class="nav-link px-1 py-1 text-gray-300">Student Services</a>
+        <a href="news.html" class="nav-link px-1 py-1 text-gray-300">News</a>
+        <a href="events.php" class="nav-link px-1 py-1 text-gray-300">Events</a>
+        <a href="contact.php" class="nav-link px-1 py-1 text-gray-300">Contact</a>
+        <a href="online-admission.html" class="btn-sky px-6 py-2 rounded-full font-bold flex items-center gap-2 text-sm">
+          <i class="fas fa-user-graduate"></i> Enroll Now!
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="min-h-screen flex items-center pt-20 pb-12 relative overflow-hidden bg-gradient-to-br from-[#0a1e3d] via-[#1a3a6b] to-[#0a1e3d]">
+    <div class="float-shape w-96 h-96 bg-[#4fc3f7] top-20 -left-20"></div>
+    <div class="float-shape w-64 h-64 bg-[#29b6f6] bottom-20 -right-20"></div>
+    <div class="float-shape w-40 h-40 bg-[#4fc3f7] top-1/2 left-1/2 -translate-x-1/2"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <div class="flex-1 text-white">
+          <div class="inline-block bg-white/10 backdrop-blur-sm text-bcp-sky text-xs font-semibold px-5 py-2 rounded-full mb-6 border border-white/10">
+            <i class="fas fa-bolt mr-2"></i> Future-Ready Education
+          </div>
+          <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+            <span class="text-bcp-sky">Bestlink</span> College <br />of the Philippines
+          </h1>
+          <div class="mt-6 text-[#b0d4e8] italic bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full inline-block border-l-4 border-bcp-sky">
+            <i class="fas fa-quote-left mr-2 opacity-60"></i> "Be trained to be the best. Be linked to success."
+          </div>
+          <p class="text-lg text-[#b0d4e8] mt-6 max-w-xl leading-relaxed">
+            Discover modern programs, a vibrant campus community, and an education designed for where the world is going.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-8">
+            <a href="online-admission.html" class="btn-sky px-10 py-4 rounded-full font-bold flex items-center gap-3 text-base shadow-2xl shadow-[#4fc3f7]/20 pulse-soft">
+              <i class="fas fa-graduation-cap"></i> Enroll Now!
+            </a>
+            <a href="programs.html" class="btn-outline-sky px-10 py-4 rounded-full font-bold flex items-center gap-3 text-base">
+              Explore Programs <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex-1 w-full hero-image-bg shadow-2xl shadow-[#4fc3f7]/10">
+          <div class="hero-image-content">
+            <div class="glass rounded-2xl p-5 max-w-xs backdrop-blur-xl border border-white/20">
+              <img src="../assets/bcp-logo.png" alt="BCP" class="h-12 w-auto mb-2" />
+              <div class="text-xl font-black text-white leading-tight">
+                <span class="block text-sm font-light tracking-widest text-bcp-sky">BESTLINK COLLEGE</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2 text-xs">
+                <span class="bg-bcp-sky text-[#0a1e3d] font-bold px-3 py-1 rounded-full">since 2002</span>
+                <span class="text-white/80 font-medium"><i class="fas fa-map-pin text-bcp-sky"></i> 3 campuses</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <div class="bg-bcp-deep text-white py-16 my-6 rounded-[4rem] rounded-b-3xl mx-4 md:mx-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#4fc3f7]/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#29b6f6]/10 rounded-full blur-2xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10 flex flex-wrap justify-around items-center gap-8 text-center">
+      <div>
+        <div class="stat-number text-5xl">45,000+</div>
+        <div class="font-light opacity-80 mt-1">Students</div>
+        <div class="text-xs opacity-50">A thriving learning community across all programs and campuses.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">2002</div>
+        <div class="font-light opacity-80 mt-1">Established</div>
+        <div class="text-xs opacity-50">Founded in June 2002 — over two decades of quality education.</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl">3</div>
+        <div class="font-light opacity-80 mt-1">Campuses</div>
+        <div class="text-xs opacity-50">Millionaire's Village, Main, and Bulacan campuses serving learners.</div>
+      </div>
+      <div class="glass px-8 py-4 rounded-full flex items-center gap-4 border border-white/10">
+        <img src="../assets/bcp-logo.png" alt="BCP" class="h-10 w-auto" />
+        <span class="font-bold tracking-wider text-lg">BCP</span>
+        <span class="opacity-30">|</span>
+        <span class="font-light">PHILIPPINES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FEATURED PROGRAMS ===== -->
+  <section class="py-20 bg-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#4fc3f7]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#29b6f6]/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-16">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-star mr-2"></i> Academics</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-[#0a1e3d] mt-3">Featured Programs</h2>
+        <p class="text-[#1a3a6b] max-w-2xl mx-auto mt-4 text-lg">Industry-aligned college degrees designed to launch successful careers.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div v-for="(prog, idx) in programs" :key="prog.title" class="program-card p-7">
+          <div class="flex justify-between items-start mb-4">
+            <div class="icon-wrap">
+              <i :class="prog.icon"></i>
+            </div>
+            <span class="program-tag"><i class="far fa-clock mr-1"></i> 4 years</span>
+          </div>
+          <h3 class="text-xl font-bold text-[#0a1e3d]">{{ prog.title }}</h3>
+          <p class="text-sm text-[#1a3a6b] mt-2 leading-relaxed">{{ prog.desc }}</p>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <span v-for="tag in prog.tags" :key="tag" class="feature-badge">{{ tag }}</span>
+          </div>
+          <a href="#" class="inline-flex items-center gap-2 mt-5 text-bcp-sky font-semibold hover:gap-3 transition-all duration-300 group">
+            Learn more <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BCP SPIRIT SECTION ===== -->
+  <section class="py-20 bg-gradient-to-br from-[#0a1e3d] via-[#1a3a6b] to-[#0a1e3d] relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-96 h-96 bg-[#4fc3f7]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#29b6f6]/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-14">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-flag mr-2"></i> THE BCP SPIRIT</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-white mt-3">Say hello to the BCP Hero</h2>
+        <p class="text-[#b0d4e8] max-w-3xl mx-auto mt-4 text-lg leading-relaxed">
+          The BCP Hero is the spirited guardian of our campus — a bold, future-ready champion who carries the values we live by. More than a character, the BCP Hero represents every learner's journey: courage, curiosity, and the drive to be trained to be the best.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div v-for="(item, idx) in spiritItems" :key="item.title" class="spirit-card">
+          <div class="flex flex-col items-center text-center">
+            <div class="spirit-icon">
+              <i :class="item.icon"></i>
+            </div>
+            <h3 class="text-xl font-bold text-[#0a1e3d] mt-4">{{ item.title }}</h3>
+            <p class="text-[#1a3a6b] text-sm mt-2 leading-relaxed">{{ item.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY BCP ===== -->
+  <section class="py-20 bg-gradient-to-br from-[#eef4fc] via-white to-[#dce8f5] relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-80 h-80 bg-[#4fc3f7]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-[#29b6f6]/5 rounded-full blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-14">
+        <span class="text-bcp-sky font-semibold tracking-widest text-sm uppercase"><i class="fas fa-heart mr-2"></i> Why BCP</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-[#0a1e3d] mt-3">Why Choose Bestlink</h2>
+        <p class="text-[#1a3a6b] max-w-2xl mx-auto mt-4 text-lg">Everything you need to learn, grow, and succeed — under one institution.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="(item, idx) in whyItems" :key="item.title" class="why-card">
+          <div class="flex items-start gap-4">
+            <div class="why-icon">
+              <i :class="item.icon"></i>
+            </div>
+            <div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-[#0a1e3d] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <a href="index.html">
+              <img src="../assets/bcp-logo.png" alt="BCP" class="h-12 w-auto" />
+            </a>
+            <a href="index.html" class="font-bold text-lg hover:text-bcp-sky transition-colors">BCP</a>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            At Bestlink College of the Philippines, We provide and promote quality education with modern and unique techniques to able to enhance the skill and the knowledge of our dear students to make them globally competitive and productive citizens.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">EXPLORE</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="about.html" class="footer-link">About</a></li>
+            <li><a href="programs.html" class="footer-link">Programs</a></li>
+            <li><a href="admissions.html" class="footer-link">Admissions</a></li>
+            <li><a href="student-services.html" class="footer-link">Student Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">USEFUL LINKS</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="#" class="footer-link">BCP College LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SHS LMS</a></li>
+            <li><a href="#" class="footer-link">BCP SMS</a></li>
+            <li><a href="#" class="footer-link">BCP Student E-Mail</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">CONTACT</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-bcp-sky mt-1"></i> #1071 Brgy. Kaligayahan, Quirino Highway, Novaliches Quezon City, Philippines 1123</li>
+            <li class="flex gap-3"><i class="fas fa-envelope text-bcp-sky mt-1"></i> bcp-inquiry@bcp.edu.ph</li>
+            <li class="flex gap-3"><i class="fas fa-phone text-bcp-sky mt-1"></i> 7000-5317 · 8442-8601</li>
+          </ul>
+          <div class="flex gap-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-bcp-sky transition-colors"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 flex flex-wrap justify-between items-center text-sm text-gray-400">
+        <span>© 2026 Bestlink College of the Philippines · Enrollment Portal</span>
+        <div class="flex flex-wrap gap-4">
+          <a href="#" class="footer-link">News</a>
+          <a href="events.php" class="footer-link">Events</a>
+          <a href="contact.php" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">Gallery</a>
+          <a href="#" class="footer-link">Careers</a>
+          <a href="#" class="footer-link">Scholarships</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const { createApp, ref, onMounted } = Vue;
+
+  const app = createApp({
+    setup() {
+      const programs = ref([
+        { title: 'BS Information Technology', icon: 'fas fa-laptop-code', desc: 'Build software, networks, and digital systems with a future-ready, industry-aligned curriculum.', tags: ['Software Development', 'Networking', 'Web & Mobile'] },
+        { title: 'BS Hospitality Management', icon: 'fas fa-utensils', desc: 'Master hotel, restaurant, and culinary operations through hands-on training.', tags: ['Culinary Arts', 'Hotel Operations', 'Events'] },
+        { title: 'BS Office Administration', icon: 'fas fa-building', desc: 'Develop office management, communication, and administrative expertise.', tags: ['Office Management', 'Records', 'Communication'] },
+        { title: 'BS Business Administration', icon: 'fas fa-chart-line', desc: 'Develop leadership, management, and entrepreneurial skills for modern business.', tags: ['Marketing', 'Financial Management', 'Entrepreneurship'] },
+        { title: 'BS Criminology', icon: 'fas fa-balance-scale', desc: 'Prepare for a career in law enforcement, forensics, and public safety.', tags: ['Forensic Science', 'Criminal Law', 'Crime Detection'] },
+        { title: 'Bachelor of Elementary Education', icon: 'fas fa-chalkboard-teacher', desc: 'Train to become a competent and compassionate elementary educator.', tags: ['Pedagogy', 'Child Development', 'Practice Teaching'] }
+      ]);
+
+      const whyItems = ref([
+        { icon: 'fas fa-graduation-cap', title: 'Quality Education', desc: 'Industry-relevant curriculum delivered by experienced educators.' },
+        { icon: 'fas fa-microscope', title: 'Modern Facilities', desc: 'Up-to-date laboratories, studios, and digital classrooms.' },
+        { icon: 'fas fa-briefcase', title: 'Career-Ready Skills', desc: 'Hands-on training and internships that prepare you for the workplace.' },
+        { icon: 'fas fa-users', title: 'Vibrant Community', desc: 'A diverse student body with active clubs and organizations.' },
+        { icon: 'fas fa-hand-holding-heart', title: 'Supportive Environment', desc: 'Guidance, counseling, and student services every step of the way.' },
+        { icon: 'fas fa-hand-holding-usd', title: 'Accessible Opportunities', desc: 'Scholarships and financial aid for deserving students.' }
+      ]);
+
+      const spiritItems = ref([
+        { icon: 'fas fa-rocket', title: 'Driven by Innovation', desc: 'A symbol of forward-thinking learning and modern, tech-ready education.' },
+        { icon: 'fas fa-shield-alt', title: 'Guardian of Excellence', desc: 'Embodying our promise to train every student to be the best.' },
+        { icon: 'fas fa-users', title: 'Spirit of the Community', desc: 'Rallying our students, faculty, and alumni around shared success.' }
+      ]);
+
+      onMounted(() => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.from('.hero-image-bg', { opacity: 0, scale: 0.95, duration: 1.2, delay: 0.3 })
+          .from('.hero-image-content', { opacity: 0, y: 40, duration: 0.8 }, '-=0.6')
+          .from('h1', { opacity: 0, y: 50, duration: 0.8 }, '-=0.4')
+          .from('.inline-block', { opacity: 0, y: 20, duration: 0.6, stagger: 0.1 }, '-=0.3');
+
+        gsap.from('.stat-number', {
+          scrollTrigger: { trigger: '.stat-number', start: 'top 90%' },
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out'
+        });
+
+        gsap.utils.toArray('.program-card').forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 85%' },
+            opacity: 0,
+            y: 60,
+            duration: 0.8,
+            delay: i * 0.1,
+            ease: 'power3.out'
+          });
+        });
+
+        gsap.utils.toArray('.spirit-card').forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 85%' },
+            opacity: 0,
+            y: 50,
+            duration: 0.7,
+            delay: i * 0.15,
+            ease: 'power3.out'
+          });
+        });
+
+        gsap.utils.toArray('.why-card').forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 88%' },
+            opacity: 0,
+            y: 50,
+            duration: 0.7,
+            delay: i * 0.08,
+            ease: 'power3.out'
+          });
+        });
+      });
+
+      return { programs, whyItems, spiritItems };
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>
